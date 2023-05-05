@@ -4,7 +4,7 @@ import os
 import random
 import sys
 import math
-pygame.init()
+pygame.init() 
 
 # Global Constants
 SCREEN_HEIGHT = 600
@@ -91,10 +91,16 @@ class Tank:
             self.tankDuck = False
             self.tankRun = False
             self.tankJump = True
+            sound = pygame.mixer.Sound("assets/audio/cartoon-jump-6462.mp3")
+            sound.play()
         elif userInput[pygame.K_DOWN] and not self.tankJump:
             self.tankDuck = True
             self.tankRun = False
             self.tankJump = False
+            sound = pygame.mixer.Sound("assets/audio/crouch.mp3")
+            sound.play(maxtime=900)
+
+
         elif not (self.tankJump or userInput[pygame.K_DOWN]):
             self.tankDuck = False
             self.tankRun = True
@@ -123,6 +129,7 @@ class Tank:
             self.tankJump = False
             self.jump_vel = self.JUMP_VEL
 
+        
     def draw(self, SCREEN):
         SCREEN.blit(self.image, (self.tankRect.x, self.tankRect.y))
 
@@ -268,14 +275,15 @@ def main():
             x_pos_bg = 0
         x_pos_bg -= game_speed
 
+    
     while run:
-        for event in pygame.event.get():
+        for event in pygame.event.get():      
             # quit game after escape key is pressed
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:    # escape key quits the program
-                    run = False
-                    pygame.quit()
-                    sys.exit()
+            
+            if event.key == pygame.K_ESCAPE:    # escape key quits the program
+                pygame.quit()
+                sys.exit()
+                run = False
             # bullet shot from tank (triggered by q key) that evaporates obstacles upon impact, granting 200 points each
             """
             if event.type == pygame.KEYDOWN:
@@ -288,7 +296,7 @@ def main():
                             obstacles.pop()
                             points += 500
             """
-
+        
         SCREEN.fill(BackgroundColor)
         userInput = pygame.key.get_pressed()
 
@@ -312,7 +320,8 @@ def main():
             obstacle.draw(SCREEN)
             obstacle.update()
             if player.tankRect.colliderect(obstacle.rect):
-                pygame.time.delay(2000)
+                ## the delay was at 2000 but I think game run cleaner when it hits an obstacle and does not have to wait a while to restart
+                pygame.time.delay(100)
                 death_count += 1
                 sound = pygame.mixer.Sound("assets/audio/esm_8_bit_game_over_1_arcade_80s_simple_alert_notification_game.mp3")
                 sound.play()
@@ -339,7 +348,7 @@ def menu(death_count):
         if death_count == 0:
             text = font.render("Tank Runner, Press any Key to Start", True, (0, 0, 0))
         elif death_count > 0:
-            text = font.render("Press any Key to Restart", True, (0, 0, 0))
+            text = font.render("Press any Key to Restart or ESC to exit game", True, (0, 0, 0))
             score = font.render("Your Score: " + str(points), True, (0, 0, 0))
             scoreRect = score.get_rect()
             scoreRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 50)
