@@ -53,19 +53,6 @@ BG = pygame.image.load(os.path.join("assets/other", "Track.png"))
 
 BULLET = [ pygame.image.load(os.path.join("assets/other", "Rocket.png"))]
 
-class Game:
-    def __init__(self):
-        self.tank = Tank()
-
-    def play_sound(self, sound_path):
-        sound = pygame.mixer.Sound(sound_path)
-        sound.play()
-
-    def update(self):
-        for obstacle in self.obstacle_list:
-            if obstacle.rect.right < 0:
-                self.play_sound("assets/audio/cartoon-jump-6462.mp3")
-
 class Tank:
     X_POS = 80
     Y_POS = 310
@@ -184,7 +171,6 @@ class Obstacle:
         self.type = type
         self.rect = self.image[self.type].get_rect()
         self.rect.x = SCREEN_WIDTH
-        self.passed = False
 
     def update(self):
         self.rect.x -= game_speed
@@ -232,7 +218,7 @@ class Obstacle2:
 
     def update(self):
         self.rect.y += game_speed / 4
-        if self.rect.y > 380:
+        if self.rect.y > 350:
             obstacles.pop()
 
     def draw(self, SCREEN):
@@ -243,7 +229,7 @@ class SmallMeteor(Obstacle2):
         self.type = 0
         self.type = random.randint(0, 2)
         super().__init__(image, self.type)
-        self.rect.x = 425
+        self.rect.x = 475
 
 class LargeMeteor(Obstacle2):
     def __init__(self, image):
@@ -253,7 +239,7 @@ class LargeMeteor(Obstacle2):
         self.rect.x = 400
 
 def main():
-    global game_speed, x_pos_bg, y_pos_bg, points, obstacles
+    global game_speed, x_pos_bg, y_pos_bg, points, obstacles, death_score 
     run = True
     clock = pygame.time.Clock()
     player = Tank()
@@ -266,6 +252,7 @@ def main():
     obstacles = []
     bullets = []
     death_count = 0
+    death_score = 0
 
     def score():
         global points, game_speed
@@ -273,8 +260,10 @@ def main():
 
         if points % 100 == 0:
             game_speed += 1
+        
+        if points % 1000 == 0:
             sound = pygame.mixer.Sound("assets/audio/score_sound.mp3")
-            sound.play(maxtime=2000)
+            sound.play(maxtime=1000)
 
         text = font.render("Points: " + str(points), True, (0, 0, 0))
         textRect = text.get_rect()
@@ -339,6 +328,7 @@ def main():
                 ## the delay was at 2000 but I think game run cleaner when it hits an obstacle and does not have to wait a while to restart
                 pygame.time.delay(100)
                 death_count += 1
+
                 sound = pygame.mixer.Sound("assets/audio/esm_8_bit_game_over_1_arcade_80s_simple_alert_notification_game.mp3")
                 sound.play()
                 menu(death_count)
