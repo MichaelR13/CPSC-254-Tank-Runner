@@ -53,6 +53,18 @@ BG = pygame.image.load(os.path.join("assets/other", "Track.png"))
 
 BULLET = [ pygame.image.load(os.path.join("assets/other", "Rocket.png"))]
 
+class Game:
+    def __init__(self):
+        self.tank = Tank()
+
+    def play_sound(self, sound_path):
+        sound = pygame.mixer.Sound(sound_path)
+        sound.play()
+
+    def update(self):
+        for obstacle in self.obstacle_list:
+            if obstacle.rect.right < 0:
+                self.play_sound("assets/audio/cartoon-jump-6462.mp3")
 
 class Tank:
     X_POS = 80
@@ -172,6 +184,7 @@ class Obstacle:
         self.type = type
         self.rect = self.image[self.type].get_rect()
         self.rect.x = SCREEN_WIDTH
+        self.passed = False
 
     def update(self):
         self.rect.x -= game_speed
@@ -257,8 +270,11 @@ def main():
     def score():
         global points, game_speed
         points += 1
+
         if points % 100 == 0:
             game_speed += 1
+            sound = pygame.mixer.Sound("assets/audio/score_sound.mp3")
+            sound.play(maxtime=2000)
 
         text = font.render("Points: " + str(points), True, (0, 0, 0))
         textRect = text.get_rect()
