@@ -279,7 +279,7 @@ def main():
             SCREEN.blit(BG, (image_width + x_pos_bg, y_pos_bg))
             x_pos_bg = 0
         x_pos_bg -= game_speed
-
+        #comment
     
     while run:
         for event in pygame.event.get():      
