@@ -7,9 +7,9 @@ import math
 pygame.init()
 
 # Global Constants
-SCREEN_HEIGHT = 600
-SCREEN_WIDTH = 1100
-SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+SCREEN_HEIGHT = 0
+SCREEN_WIDTH = 0
+SCREEN = None
 
 BackgroundColor = pygame.color.Color('#FA5F55')
 MenuColor = pygame.color.Color('#89CFF0')
@@ -356,4 +356,8 @@ def menu(death_count):
                 main()
 
 
-menu(death_count=0)
+if __name__ == "__main__":
+    SCREEN_HEIGHT = 600
+    SCREEN_WIDTH = 1100
+    SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    menu(death_count=0)
